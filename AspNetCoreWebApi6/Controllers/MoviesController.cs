@@ -1,6 +1,10 @@
 ﻿using AspNetCoreWebApi6.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mime;
+using System.Runtime.Serialization.Json;
+using System.Text.Json;
 
 namespace AspNetCoreWebApi6.Controllers
 {
@@ -44,44 +48,95 @@ namespace AspNetCoreWebApi6.Controllers
             return movie;
         }
 
-        // POST: api/Movies
-        [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        [HttpGet("Genre/{genre}")]
+        public async Task<ActionResult<Movie>> GetMovieByGenre(string genre)
         {
+            if (_dbContext.Movies == null)
+            {
+                return NotFound();
+            }
+            var movie = await _dbContext.Movies.Where(m => m.Genre.Contains(genre)).ToArrayAsync();
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            return CreatedAtAction("GetMovieByGenre", movie);
+        }
+
+        [HttpGet("Title/{title}")]
+        public async Task<ActionResult<Movie>> GetMovieByTitle(string title)
+        {
+            if (_dbContext.Movies == null)
+            {
+                return NotFound();
+            }
+            var movie = await _dbContext.Movies.Where(m => m.Title.Contains(title)).ToArrayAsync();
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            return CreatedAtAction("GetMovieByTitle", movie);
+        }
+
+        private async Task AddMovie(Movie movie)
+        {
+            movie.Id = 0;
             _dbContext.Movies.Add(movie);
             await _dbContext.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, movie);
         }
 
         // PUT: api/Movies/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(int id, Movie movie)
+        [HttpPut()]
+        public async Task<IActionResult> PutMovie(Movie movie)
         {
-            if (id != movie.Id)
+            if (movie == null)
             {
-                return BadRequest();
-            }
-
-            _dbContext.Entry(movie).State = EntityState.Modified;
-
-            try
-            {
-                await _dbContext.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MovieExists(id))
+                return BadRequest(new JsonResult("Movie entity is null")
                 {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                    ContentType = "application/json",
+                    StatusCode = StatusCodes.Status400BadRequest
+                });
             }
+            if (movie.Id != 0 && !MovieExists(movie.Id))
+            {
+                return BadRequest(new JsonResult($"The movie Id {movie.Id} don't exist, to create one set Id to 0")
+                {
+                    ContentType = "application/json",
+                    StatusCode = StatusCodes.Status400BadRequest
+                });
+            }
+            if (movie.Id == 0)
+            {
+                await AddMovie(movie);
 
-            return NoContent();
+                return Created(new Uri($"api/Movies/{movie.Id}", UriKind.Relative), movie);
+            }
+            else
+            {
+                _dbContext.Entry(movie).State = EntityState.Modified;
+
+                try
+                {
+                    await _dbContext.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MovieExists(movie.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return Ok();
+            }
         }
 
         // DELETE: api/Movies/5
