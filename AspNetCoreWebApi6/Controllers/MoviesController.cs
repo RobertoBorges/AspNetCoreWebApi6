@@ -115,7 +115,7 @@ namespace AspNetCoreWebApi6.Controllers
             }
             if (!SessionExists(movie.SessionId))
             {
-                return BadRequest(new JsonResult($"The session Id {movie.Id} don't exist")
+                return BadRequest(new JsonResult($"The session Id {movie.SessionId} don't exist")
                 {
                     ContentType = "application/json",
                     StatusCode = StatusCodes.Status400BadRequest
