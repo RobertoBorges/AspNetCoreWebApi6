@@ -16,3 +16,11 @@ The Add-Migration command generates code to create the initial database schema w
 The Update-Database command runs the Up method in the Migrations/{time-stamp}_Initial.cs file, which creates the database.
 
 Now, we will check the database created. Open View -> SQL Server Object Explorer.
+
+To run this on your environment, in GitHub create the following Secrets:
+
+	AZURE_WEBAPP_PUBLISH_PROFILE
+	TENANTID
+	DOMAIN
+	CLIENTID
+	AUDIENCE
