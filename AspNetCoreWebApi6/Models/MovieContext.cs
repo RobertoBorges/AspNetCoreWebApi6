@@ -10,5 +10,7 @@ namespace AspNetCoreWebApi6.Models
         }
 
         public DbSet<Movie> Movies { get; set; } = null!;
+
+        public DbSet<Session> Sessions { get; set; } = null!;
     }
 }

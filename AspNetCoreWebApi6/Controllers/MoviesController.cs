@@ -109,6 +109,14 @@ namespace AspNetCoreWebApi6.Controllers
                     StatusCode = StatusCodes.Status400BadRequest
                 });
             }
+            if (!SessionExists(movie.SessionId))
+            {
+                return BadRequest(new JsonResult($"The session Id {movie.Id} don't exist")
+                {
+                    ContentType = "application/json",
+                    StatusCode = StatusCodes.Status400BadRequest
+                });
+            }
             if (movie.Id == 0)
             {
                 await AddMovie(movie);
@@ -145,13 +153,21 @@ namespace AspNetCoreWebApi6.Controllers
         {
             if (_dbContext.Movies == null)
             {
-                return NotFound();
+                return Ok(new JsonResult($"The movie Id {id} don't exist or already deleted")
+                {
+                    ContentType = "application/json",
+                    StatusCode = StatusCodes.Status204NoContent
+                });
             }
 
             var movie = await _dbContext.Movies.FindAsync(id);
             if (movie == null)
             {
-                return NotFound();
+                return Ok(new JsonResult($"The movie Id {id} don't exist or already deleted")
+                {
+                    ContentType = "application/json",
+                    StatusCode = StatusCodes.Status204NoContent
+                });
             }
 
             _dbContext.Movies.Remove(movie);
@@ -163,6 +179,11 @@ namespace AspNetCoreWebApi6.Controllers
         private bool MovieExists(long id)
         {
             return (_dbContext.Movies?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        private bool SessionExists(long id)
+        {
+            return (_dbContext.Sessions?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
