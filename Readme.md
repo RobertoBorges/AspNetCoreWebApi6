@@ -1,6 +1,6 @@
 # Demo AspNet API using Microsoft Identity library for Authentication
 
-Debug locally with visual studio
+## Debug locally with visual studio
 
 This ode use Entity framework to build/run the database
 
@@ -12,12 +12,13 @@ If you added new models run:
 Do update/create your local database use:
 	Update-Database
 
-
 The Add-Migration command generates code to create the initial database schema which is based on the model specified in the MovieContext class. The Initial argument is the migration name and any name can be used.
 
 The Update-Database command runs the Up method in the Migrations/{time-stamp}_Initial.cs file, which creates the database.
 
 Now, we will check the database created. Open View -> SQL Server Object Explorer.
+
+## To run this on your Azure environment
 
 This workflow will build and push a .NET Core app to an Azure Web App when a commit is pushed to your default branch.
 
@@ -39,7 +40,7 @@ For more information on the Azure Web Apps Deploy action: https://github.com/Azu
 For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples
 
 
-To run this on your environment, in GitHub create the following Secrets:
+In GitHub create the following Secrets:
 
 	AZURE_WEBAPP_PUBLISH_PROFILE
 	TENANTID
