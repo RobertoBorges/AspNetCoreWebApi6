@@ -10,11 +10,11 @@ namespace AspNetCoreWebApi6.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SessionController : ControllerBase
+    public class SessionsController : ControllerBase
     {
         private readonly MovieContext _dbContext;
 
-        public SessionController(MovieContext dbContext)
+        public SessionsController(MovieContext dbContext)
         {
             _dbContext = dbContext;
         }
