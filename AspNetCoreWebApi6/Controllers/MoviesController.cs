@@ -10,7 +10,7 @@ using System.Text.Json;
 
 namespace AspNetCoreWebApi6.Controllers
 {
-    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+    //[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
